@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useContext, useEffect, useState} from "react"
+import { Switch, Route } from "react-router-dom"
+import "./App.css"
+import RegionItem from "./RegionItem"
+import Region from "./Region"
+
+
 
 function App() {
+
+  const [regions, setregions] = useState([])
+  const [currentRegion, setcurrentRegion] = useState()
+  
+  useEffect(() => {
+    fetch('https://covid-api.com/api/regions?per_page=20')
+    .then(res => res.json())
+    .then(response => setregions(response.data))
+
+ }, [])
+ 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      
+      {regions.map(i => <RegionItem key={i.iso} regionName = {i.name} iso = {i.iso} />)}
+      <Switch>
+      <Route path="/region" exact component={Region} />
+      </Switch>
     </div>
-  );
+  )
 }
 
-export default App;
+
+export default App
